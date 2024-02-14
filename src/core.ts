@@ -37,7 +37,7 @@ function timeMsg() {
   return `\x1b[2m${hours}:${minutes}:${seconds}\x1b[22m`;
 }
 
-function logInfo(logs: string[]) {
+function logInfo(logs: string[], logger: AstroIntegrationLogger) {
   logs.forEach((log, idx) => {
     let symbol: string = '\u2514\u2500';
     if (idx === logs.length - 1) {
@@ -45,7 +45,7 @@ function logInfo(logs: string[]) {
     } else {
       symbol = '\u251C\u2500'
     }
-    console.log(`${timeMsg()}   \x1b[34m${symbol}\x1b[0m ${log}`)
+    logger.info.log(`${timeMsg()}   \x1b[34m${symbol}\x1b[0m ${log}`)
   });
 }
 
@@ -124,14 +124,14 @@ export async function createFiles(src: string, dist: URL, options: FaviconOption
   const totalTime = (Date.now() - startTime) / 1000;
 
   // Log infos
-  console.log(`\n\x1b[42m\x1b[30m generating favicons \x1b[39m\x1b[49m`);
-  console.log(`${timeMsg()} \x1b[32m\u25B6\x1b[0m ${src.replace(/^\.\//, '')}`);
-  logInfo(imgLogs);
+  logger.info(`\n\x1b[42m\x1b[30m generating favicons \x1b[39m\x1b[49m`);
+  logger.info(`${timeMsg()} \x1b[32m\u25B6\x1b[0m ${src.replace(/^\.\//, '')}`);
+  logInfo(imgLogs, logger);
   fileLogs.forEach((log) => {
-    console.log(`${timeMsg()} \x1b[32m\u25B6\x1b[0m ${getPlatform(log)}`);
-    console.log(`${timeMsg()}   \x1b[34m\u2514\u2500\x1b[0m ${log}`)
+    logger.info(`${timeMsg()} \x1b[32m\u25B6\x1b[0m ${getPlatform(log)}`);
+    logger.info(`${timeMsg()}   \x1b[34m\u2514\u2500\x1b[0m ${log}`)
   });
-  console.log(`${timeMsg()} \x1b[32m\u2713 Completed in ${totalTime}s.\x1b[39m\n`);
+  logger.info(`${timeMsg()} \x1b[32m\u2713 Completed in ${totalTime}s.\x1b[39m\n`);
   logger.info(`${totalFile} file(s) built in \x1b[1m${totalTime}s\x1b[m`);
 };
 
